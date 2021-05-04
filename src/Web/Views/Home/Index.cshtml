@@ -1,0 +1,44 @@
+﻿@model HomeIndexViewModel
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<form class="form-inline py-3">
+    <label class="mr-2">Category: </label>
+    <select asp-for="CategoryId" asp-items="Model.Categories" class="form-control mr-0 mr-sm-2"></select>
+    <label class="mr-2 mt-2 mt-sm-0">Author: </label>
+    <select asp-for="AuthorId" asp-items="Model.Authors" class="form-control"></select>
+</form>
+
+<div class="row mx-md-n2">
+    @foreach (var product in Model.Products)
+    {
+        <div class="col-md-3 px-md-2 mb-4 d-flex flex-column align-items-center border pl-2 pt-2 pb-2">
+            <div class="product-image-wrapper">
+                <img src="~/img/@product.PictureUri" class="product-image" />
+            </div>
+            <div class="product-name">
+                @product.Name
+            </div>
+            <div class="author-name">
+                @product.AuthorName
+            </div>
+            <div class="product-price">
+                @product.Price.ToString("c2")
+            </div>
+            <button class="btn btn-success btn-sm mt-auto"><i class="fas fa-cart-plus"></i> Add to Basket</button>
+        </div>
+    }
+</div>
+
+<partial name="_PaginationPartial" model="Model.PaginationInfo">
+
+    @section scripts{
+
+        <script>
+            $("#CategoryId,#AuthorId").change(function () {
+                $(this).closest("form").submit();
+            });
+        </script>
+
+    }
