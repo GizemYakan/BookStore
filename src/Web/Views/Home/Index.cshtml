@@ -1,6 +1,8 @@
 ﻿@model HomeIndexViewModel
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
 @{
     ViewData["Title"] = "Home Page";
+    var token = Xsrf.GetAndStoreTokens(Context).RequestToken;
 }
 
 <form class="form-inline py-3">
@@ -13,21 +15,23 @@
 <div class="row mx-md-n2">
     @foreach (var product in Model.Products)
     {
-        <div class="col-md-3 px-md-2 mb-4 d-flex flex-column align-items-center border pl-2 pt-2 pb-2">
-            <div class="product-image-wrapper">
-                <img src="~/img/@product.PictureUri" class="product-image" />
-            </div>
-            <div class="product-name">
-                @product.Name
-            </div>
-            <div class="author-name">
-                @product.AuthorName
-            </div>
-            <div class="product-price">
-                @product.Price.ToString("c2")
-            </div>
-            <button class="btn btn-success btn-sm mt-auto"><i class="fas fa-cart-plus"></i> Add to Basket</button>
+    <div class="col-md-3 px-md-2 mb-4 d-flex flex-column align-items-center border pl-2 pt-2 pb-2">
+        <div class="product-image-wrapper">
+            <img src="~/img/@product.PictureUri" class="product-image" />
         </div>
+        <div class="product-name">
+            @product.Name
+        </div>
+        <div class="author-name">
+            @product.AuthorName
+        </div>
+        <div class="product-price">
+            @product.Price.ToString("c2")
+        </div>
+        <a href="#" class="btn btn-success btn-sm mt-auto" data-add-to-basket="@product.Id">
+            <i class="fas fa-cart-plus"></i> Add to Basket
+        </a>
+    </div>
     }
 </div>
 
@@ -38,6 +42,26 @@
         <script>
             $("#CategoryId,#AuthorId").change(function () {
                 $(this).closest("form").submit();
+            });
+
+            $("[data-add-to-basket]").click(function (event) {
+                event.preventDefault();
+                var productId = $(this).data('add-to-basket');
+
+                $.ajax({
+                type: "POST",
+                url: "@Url.Action("AddToBasket", "Basket")",
+                headers: {
+                    RequestVerificationToken: "@token"
+                },
+                data: {
+                    productId: productId,
+                    quantity: 1
+                },
+                success: function (data) {
+                    $("#navBasketItemsCount").text(data.basketItemsCount);
+                }
+            });
             });
         </script>
 

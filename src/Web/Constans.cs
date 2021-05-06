@@ -8,5 +8,6 @@ namespace Web
     public static class Constans
     {
         public const int ITEMS_PER_PAGE = 8;
+        public const string BASKET_COOKIE_NAME = "BookStore";
     }
 }

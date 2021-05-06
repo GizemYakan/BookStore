@@ -1,0 +1,6 @@
+﻿@model BasketItemsCountViewModel
+
+<a class="btn btn-sm btn-info ml-1" asp-controller="Basket" asp-action="Index">
+    <i class="fas fa-shopping-cart"></i> Cart
+    <span class="badge bg-white text-info" id="navBasketItemsCount">@Model.BasketItemsCount</span>
+</a>
