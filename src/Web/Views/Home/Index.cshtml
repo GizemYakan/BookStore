@@ -1,54 +1,50 @@
 ﻿@model HomeIndexViewModel
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
-@{
-    ViewData["Title"] = "Home Page";
-    var token = Xsrf.GetAndStoreTokens(Context).RequestToken;
-}
+@{ ViewData["Title"] = "Home Page";
+                var token = Xsrf.GetAndStoreTokens(Context).RequestToken; }
 
 <form class="form-inline py-3">
-    <label class="mr-2">Category: </label>
+    <label class="mr-1">Category: </label>
     <select asp-for="CategoryId" asp-items="Model.Categories" class="form-control mr-0 mr-sm-2"></select>
-    <label class="mr-2 mt-2 mt-sm-0">Author: </label>
+    <label class="mr-1 mt-2 mt-sm-0">Author: </label>
     <select asp-for="AuthorId" asp-items="Model.Authors" class="form-control"></select>
 </form>
 
 <div class="row mx-md-n2">
     @foreach (var product in Model.Products)
     {
-    <div class="col-md-3 px-md-2 mb-4 d-flex flex-column align-items-center border pl-2 pt-2 pb-2">
-        <div class="product-image-wrapper">
-            <img src="~/img/@product.PictureUri" class="product-image" />
-        </div>
-        <div class="product-name">
-            @product.Name
-        </div>
-        <div class="author-name">
-            @product.AuthorName
-        </div>
-        <div class="product-price">
-            @product.Price.ToString("c2")
-        </div>
-        <a href="#" class="btn btn-success btn-sm mt-auto" data-add-to-basket="@product.Id">
-            <i class="fas fa-cart-plus"></i> Add to Basket
-        </a>
+<div class="col-md-3 px-md-2 mb-4 d-flex flex-column align-items-center">
+    <div class="product-image-wrapper">
+        <img src="~/img/@product.PictureUri" class="product-image" />
     </div>
-    }
+    <div class="product-name">
+        @product.Name
+    </div>
+    <div class="author-name">
+        @product.AuthorName
+    </div>
+    <div class="product-price">
+        @product.Price.ToString("c2")
+    </div>
+    <a href="#" class="btn btn-success btn-sm mt-auto" data-add-to-basket="@product.Id">
+        <i class="fas fa-cart-plus"></i> Add to Basket
+    </a>
+</div>}
 </div>
 
-<partial name="_PaginationPartial" model="Model.PaginationInfo">
+<partial name="_PaginationPartial" model="Model.PaginationInfo" />
 
-    @section scripts{
+@section scripts {
+    <script>
+        $("#CategoryId, #AuthorId").change(function () {
+            $(this).closest("form").submit();
+        });
 
-        <script>
-            $("#CategoryId,#AuthorId").change(function () {
-                $(this).closest("form").submit();
-            });
+        $("[data-add-to-basket]").click(function (event) {
+            event.preventDefault();
+            var productId = $(this).data('add-to-basket');
 
-            $("[data-add-to-basket]").click(function (event) {
-                event.preventDefault();
-                var productId = $(this).data('add-to-basket');
-
-                $.ajax({
+            $.ajax({
                 type: "POST",
                 url: "@Url.Action("AddToBasket", "Basket")",
                 headers: {
@@ -60,9 +56,9 @@
                 },
                 success: function (data) {
                     $("#navBasketItemsCount").text(data.basketItemsCount);
+                    toastr.success("The item has been added to the basket.")
                 }
             });
-            });
-        </script>
-
-    }
+        });
+    </script>
+}

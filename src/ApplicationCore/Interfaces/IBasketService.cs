@@ -8,8 +8,13 @@ namespace ApplicationCore.Interfaces
 {
     public interface IBasketService
     {
+
         Task AddItemToBasket(int basketId, int productId, int quantity);
 
-        Task<int> BasketItemCount(int basketId);
+        Task<int> BasketItemsCount(int basketId);
+
+        Task DeleteBasketItem(int basketId, int basketItemId);
+
+        Task UpdateBasketItem(int basketId, int basketItemId, int quantity);
     }
 }

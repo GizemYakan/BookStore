@@ -13,7 +13,9 @@ namespace Infrastructure.Data.Config
     {
         public void Configure(EntityTypeBuilder<Author> builder)
         {
-            builder.Property(x => x.FullName).IsRequired().HasMaxLength(100);
+            builder.Property(x => x.FullName)
+                .IsRequired()
+                .HasMaxLength(100);
         }
     }
 }

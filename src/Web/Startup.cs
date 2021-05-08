@@ -35,9 +35,10 @@ namespace Web
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("AppDbConnection")));
+
             services.AddDbContext<AppIdentityDbContext>(options =>
-           options.UseSqlServer(
-               Configuration.GetConnectionString("IdentityDbConnection")));
+                options.UseSqlServer(
+                    Configuration.GetConnectionString("IdentityDbConnection")));
             services.AddDatabaseDeveloperPageExceptionFilter();
 
             services.AddScoped(typeof(IAsyncRepository<>), typeof(EfRepository<>));
@@ -68,9 +69,8 @@ namespace Web
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
-
-            //https://docs.microsoft.com/en-us/aspnet/core/fundamentals/localization?view=aspnetcore-5.0#localization-middleware-2
-            var supportedCultures = new[] { "en-US" };
+            // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/localization?view=aspnetcore-5.0#localization-middleware-2
+            var supportedCultures = new[] { "en-US"/*, "tr-TR"*/ };
             var localizationOptions = new RequestLocalizationOptions().SetDefaultCulture(supportedCultures[0])
                 .AddSupportedCultures(supportedCultures)
                 .AddSupportedUICultures(supportedCultures);

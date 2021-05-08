@@ -2,6 +2,7 @@
 using ApplicationCore.Interfaces;
 using ApplicationCore.Specifications;
 using Microsoft.AspNetCore.Http;
+using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,19 +18,53 @@ namespace Web.Services
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IAsyncRepository<Basket> _basketRepository;
         private readonly IBasketService _basketService;
+        private readonly IAsyncRepository<Product> _productRepository;
 
-        public BasketViewModelService(IHttpContextAccessor httpContextAccessor, IAsyncRepository<Basket> basketRepository, IBasketService basketService)
+        public BasketViewModelService(IHttpContextAccessor httpContextAccessor, IAsyncRepository<Basket> basketRepository, IBasketService basketService, IAsyncRepository<Product> productRepository)
         {
             _httpContextAccessor = httpContextAccessor;
             _basketRepository = basketRepository;
             _basketService = basketService;
+            _productRepository = productRepository;
         }
 
         public async Task<BasketItemsCountViewModel> GetBasketItemsCountViewModel(int basketId)
         {
             return new BasketItemsCountViewModel()
             {
-                BasketItemsCount = await _basketService.BasketItemCount(basketId)
+                BasketItemsCount = await _basketService.BasketItemsCount(basketId)
+            };
+        }
+
+        public async Task<BasketViewModel> GetBasketViewModel()
+        {
+            int basketId = await GetOrCreateBasketIdAsync();
+            var specBasket = new BasketWithItemsSpecification(basketId);
+            var basket = await _basketRepository.FirstOrDefaultAsync(specBasket);
+            var productIds = basket.Items.Select(x => x.ProductId).ToArray();
+            var specProducts = new ProductsSpecification(productIds);
+            var products = await _productRepository.ListAsync(specProducts);
+            var basketItems = new List<BasketItemViewModel>();
+
+            foreach (var item in basket.Items.OrderBy(x => x.Id))
+            {
+                var product = products.First(x => x.Id == item.ProductId);
+                basketItems.Add(new BasketItemViewModel()
+                {
+                    Id = item.Id,
+                    ProductId = item.ProductId,
+                    Quantity = item.Quantity,
+                    ProductName = product.Name,
+                    Price = product.Price,
+                    PictureUri = product.PictureUri
+                });
+            }
+
+            return new BasketViewModel()
+            {
+                Id = basketId,
+                BuyerId = basket.BuyerId,
+                Items = basketItems,
             };
         }
 
@@ -52,20 +87,19 @@ namespace Web.Services
             var context = _httpContextAccessor.HttpContext;
             var user = context.User;
 
-            //return UserId if user is logged in
-
+            // return user id if user is logged in
             if (user.Identity.IsAuthenticated)
             {
                 return user.FindFirstValue(ClaimTypes.NameIdentifier);
             }
             else
             {
-                //return anonymous user id if a basket cookie exists
-                if (context.Request.Cookies.ContainsKey(Constans.BASKET_COOKIE_NAME))
+                // return anonymous user id if a basket cookie exists
+                if (context.Request.Cookies.ContainsKey(Constants.BASKET_COOKIE_NAME))
                 {
-                    return context.Request.Cookies[Constans.BASKET_COOKIE_NAME]; ;
+                    return context.Request.Cookies[Constants.BASKET_COOKIE_NAME];
                 }
-                // create and return an anonymouse user id 
+                // create and return an anonymous user id
                 else
                 {
                     string newBuyerId = Guid.NewGuid().ToString();
@@ -74,9 +108,8 @@ namespace Web.Services
                         IsEssential = true,
                         Expires = DateTime.Now.AddYears(10)
                     };
-                    context.Response.Cookies.Append(Constans.BASKET_COOKIE_NAME, newBuyerId, cookieOptions);
+                    context.Response.Cookies.Append(Constants.BASKET_COOKIE_NAME, newBuyerId, cookieOptions);
                     return newBuyerId;
-
                 }
             }
         }

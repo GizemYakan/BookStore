@@ -15,20 +15,20 @@ namespace ApplicationCore.Specifications
             Query.Include(x => x.Author);
         }
 
-        //ctor'dan ctor'cagırma
-        public ProductsWithAuthorSpecification(int? categoryId, int? AuthorId) : this()
+        public ProductsWithAuthorSpecification(int? categoryId, int? authorId) : this()
         {
             if (categoryId.HasValue)
             {
                 Query.Where(x => x.CategoryId == categoryId);
             }
-            if (AuthorId.HasValue)
-            {
-                Query.Where(x => x.AuthorId == AuthorId);
-            }
 
+            if (authorId.HasValue)
+            {
+                Query.Where(x => x.AuthorId == authorId);
+            }
         }
-        public ProductsWithAuthorSpecification(int? categoryId, int? AuthorId, int skip, int take) : this(categoryId, AuthorId)
+
+        public ProductsWithAuthorSpecification(int? categoryId, int? authorId, int skip, int take) : this(categoryId, authorId)
         {
             Query.Skip(skip).Take(take);
         }

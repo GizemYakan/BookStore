@@ -14,8 +14,8 @@ namespace Infrastructure.Data.Config
         public void Configure(EntityTypeBuilder<Basket> builder)
         {
             builder.Property(x => x.BuyerId)
-             .IsRequired()
-             .HasMaxLength(40);
+                .IsRequired()
+                .HasMaxLength(40);
         }
     }
 }
