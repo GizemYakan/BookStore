@@ -46,9 +46,7 @@ namespace Web.Controllers
         public async Task<IActionResult> UpdateBasketItem(int basketItemId, int quantity)
         {
             if (quantity < 1)
-            {
-                return BadRequest("The quantity cannot be less then 1.");
-            }
+                return BadRequest("The quantity cannot be less than 1.");
 
             var basketId = await _basketViewModelService.GetOrCreateBasketIdAsync();
             await _basketService.UpdateBasketItem(basketId, basketItemId, quantity);

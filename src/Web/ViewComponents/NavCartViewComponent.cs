@@ -15,11 +15,10 @@ namespace Web.ViewComponents
         {
             _basketViewModelService = basketViewModelService;
         }
+
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            var basketId = await _basketViewModelService.GetOrCreateBasketIdAsync();
-            var vm = await _basketViewModelService.GetBasketItemsCountViewModel(basketId);
-            return View(vm);
+            return View(await _basketViewModelService.GetBasketItemsCountViewModel());
         }
     }
 }
