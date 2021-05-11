@@ -102,3 +102,9 @@ body {
     text-align: center;
     font-size: .8rem;
 }
+
+/*Validation styles
+    -----------------------------------*/
+.field-validation-error {
+    color: var(--danger);
+}

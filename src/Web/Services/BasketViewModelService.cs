@@ -27,6 +27,11 @@ namespace Web.Services
             _productRepository = productRepository;
         }
 
+        public async Task<List<BasketItemViewModel>> GetBasketItems()
+        {
+            return (await GetBasketViewModel()).Items;
+        }
+
         /// <summary>
         /// Returns basket items count. (Returns 0 if basket does not exist.)
         /// </summary>

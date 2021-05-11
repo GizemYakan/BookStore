@@ -18,5 +18,6 @@ namespace ApplicationCore.Interfaces
         Task UpdateBasketItem(int basketId, int basketItemId, int quantity);
 
         Task TransferBasketAsync(string anonymousId, string userId);
+        Task DeleteBasketAsync(int basketId);
     }
 }
