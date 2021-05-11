@@ -38,7 +38,7 @@
             </div>
 
             <div class="row">
-                <div class="col-md-5 mb-3">
+                <div class="col-md-4 mb-3">
                     <label asp-for="Country">Country</label>
                     <select asp-for="Country" class="custom-select d-block w-100" required>
                         <option value="">Choose...</option>
@@ -47,7 +47,7 @@
                     </select>
                     <span asp-validation-for="Country"></span>
                 </div>
-                <div class="col-md-4 mb-3">
+                <div class="col-md-3 mb-3">
                     <label asp-for="State">State</label>
                     <select asp-for="State" class="custom-select d-block w-100" required>
                         <option value="">Choose...</option>
@@ -56,7 +56,12 @@
                     </select>
                     <span asp-validation-for="State"></span>
                 </div>
-                <div class="col-md-3 mb-3">
+                <div class="col-md-3 mb-2">
+                    <label asp-for="City">Zip</label>
+                    <input asp-for="City" type="text" class="form-control" placeholder="" required>
+                    <span asp-validation-for="City"></span>
+                </div>
+                <div class="col-md-2 mb-2">
                     <label asp-for="ZipCode">Zip</label>
                     <input asp-for="ZipCode" type="text" class="form-control" placeholder="" required>
                     <span asp-validation-for="ZipCode"></span>
