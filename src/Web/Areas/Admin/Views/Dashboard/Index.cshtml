@@ -1,0 +1,20 @@
+﻿@model List<OrderViewModel>
+@{
+    ViewData["Title"] = "Orders";
+}
+<h1>Orders</h1>
+<div class="row">
+    @foreach (var item in Model)
+    {
+<div class="card mt-3 ml-3 mr-2" style="width: 18rem;">
+    <div class="card-body">
+        <h5 class="card-title">@item.OrderDate.DateTime.ToShortDateString()</h5>
+        <p class="card-text">
+            Details: @item.OrderItemsCount books
+            <br />
+            @item.Address.City - @item.Address.Country
+        </p>
+        <a asp-area="" asp-action="OrderDetails" asp-controller="Basket" asp-route-id="@item.OrderId" class="btn btn-primary">Details</a>
+    </div>
+</div>}
+</div>

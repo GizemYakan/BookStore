@@ -46,6 +46,7 @@ namespace Web
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IHomeViewModelService, HomeViewModelService>();
             services.AddScoped<IBasketViewModelService, BasketViewModelService>();
+            services.AddScoped<IOrderViewModelService, OrderViewModelService>();
 
             services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddRoles<IdentityRole>()
@@ -82,6 +83,14 @@ namespace Web
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllerRoute(
+                  name: "areas",
+                  pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}"
+                );
+            });
 
             app.UseEndpoints(endpoints =>
             {
