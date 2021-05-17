@@ -2,6 +2,7 @@ using Infrastructure.Data;
 using Infrastructure.Identity;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -22,6 +23,9 @@ namespace Web
             using (var scope = host.Services.CreateScope())
             {
                 var appDbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                appDbContext.Database.Migrate();
+                var appIdentityDbContext = scope.ServiceProvider.GetRequiredService<AppIdentityDbContext>();
+                appIdentityDbContext.Database.Migrate();
                 var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
                 var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
                 await AppDbContextSeed.SeedAsync(appDbContext);
